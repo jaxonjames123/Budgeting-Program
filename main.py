@@ -1,4 +1,4 @@
-from my_budget.py import get_goals, edit_accounts, get_monthly_income, get_bill_amounts, print_bills, deposit, MyStates
+from my_budget import get_goals, edit_accounts, get_monthly_income, get_bill_amounts, print_bills, deposit, MyStates
 
 
 def main():
