@@ -1,4 +1,4 @@
-from my_budget import get_goals, edit_accounts, get_monthly_income, get_bill_amounts, print_bills, deposit, MyStates
+from my_budget import get_goals, edit_accounts, get_monthly_income, get_bill_amounts, print_bills, deposit, withdrawal, MyStates
 
 
 def main():
@@ -23,6 +23,8 @@ def main():
             print_bills(get_bill_amounts())
         elif current_state == states.make_deposit.value:
             deposit()
+        elif current_state == states.make_withdrawal.value:
+            withdrawal()
         if current_state == states.exit_program.value:
             print(f'Exiting program... Have a nice day!')
             break
