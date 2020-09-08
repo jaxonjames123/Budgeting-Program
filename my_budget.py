@@ -45,20 +45,59 @@ def deposit():
         print_accounts(accounts_dict)
         account = input('What account would you like to make a deposit to? ').upper()
         if account in accounts_dict:
-            amount = input('How much would you like to deposit? ')
-            try:
-                amount = float(amount)
-                if amount < 0:
-                    print("Please input a positive number, if you would like to withdraw money, "
-                          "use the withdrawal option.")
-                else:
-                    new_balance = float(accounts_dict.get(account)) + amount
-                    print(f"The updated balance for {account} is ${new_balance:,.2f}")
-                    accounts_dict.update({account: new_balance})
-                    with open(filename, 'w') as f:
-                        json.dump(accounts_dict, f)
-            except ValueError:
-                print('Please input a number of a valid format. (Ex 6542.33)')
+            while True:
+                amount = input('How much would you like to deposit? ')
+                try:
+                    amount = float(amount)
+                    if amount < 0:
+                        print("Please input a positive number, if you would like to withdraw money, "
+                              "use the withdrawal option.")
+                        continue
+                    else:
+                        new_balance = float(accounts_dict.get(account)) + amount
+                        print(f"The updated balance for {account} is ${new_balance:,.2f}")
+                        accounts_dict.update({account: new_balance})
+                        with open(filename, 'w') as f:
+                            json.dump(accounts_dict, f)
+                        break
+                except ValueError:
+                    print('Please input a number of a valid format. (Ex 6542.33)')
+                    continue
+        else:
+            print(f'{account} is not an active account, please try again with a valid account name')
+    else:
+        print('You do not currently have an open account with us. Please open an account first')
+
+
+def withdrawal():
+    filename = './accounts.json'
+    if os.path.exists(filename):
+        with open(filename) as f:
+            accounts_dict = json.load(f)
+        print_accounts(accounts_dict)
+        account = input('What account would you like to make a withdrawal from? ').upper()
+        if account in accounts_dict:
+            while True:
+                amount = input('How much would you like to withdraw? ')
+                try:
+                    amount = float(amount)
+                    if amount < 0:
+                        print("Please input a positive number")
+                        continue
+                    elif amount > float(accounts_dict.get(account)):
+                        print(f"Unfortunately, you do not have enough money in this {account}  at this time to withdraw"
+                              f"that much. Please input a number smaller than your current balance")
+                        continue
+                    else:
+                        new_balance = float(accounts_dict.get(account)) - amount
+                        print(f"The updated balance for {account} is ${new_balance:,.2f}")
+                        accounts_dict.update({account: new_balance})
+                        with open(filename, 'w') as f:
+                            json.dump(accounts_dict, f)
+                        break
+                except ValueError:
+                    print('Please input a number of a valid format. (Ex 6542.33)')
+                    continue
         else:
             print(f'{account} is not an active account, please try again with a valid account name')
     else:
