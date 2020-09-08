@@ -181,12 +181,34 @@ def get_bill_amounts():
             print_bills(bills_dict)
             if input("Would you like to change the cost of one your monthly bills? (Yes/No) ").upper() == "YES":
                 bill = input('Which bill would you like to change? ').upper()
-                bill_value = int(input(f'What is the new monthly cost of {bill}? '))
-                bills_dict[bill] = bill_value
+                while True:
+                    bill_value = input(f'What is the new monthly cost of {bill}? ')
+                    try:
+                        bill_value = float(bill_value)
+                        if bill_value < 0:
+                            print('Please input a positive number')
+                            continue
+                        else:
+                            bills_dict[bill] = bill_value
+                            break
+                    except ValueError:
+                        print('Please input a positive number')
+                        continue
             elif input('Would you like to add a new bill? (Yes/No) ').upper() == "YES":
                 bill = input('What bill would you like to add? ').upper()
-                bill_cost = int(input(f'How much does {bill} cost? '))
-                bills_dict.update({bill: bill_cost})
+                while True:
+                    bill_cost = input(f'How much does {bill} cost? ')
+                    try:
+                        bill_cost = float(bill_cost)
+                        if bill_cost < 0:
+                            print('Please input a positive number')
+                            continue
+                        else:
+                            bills_dict.update({bill: bill_cost})
+                            break
+                    except ValueError:
+                        print('Please input a positive number\n')
+                        continue
             else:
                 editing = False
         while removing:
@@ -201,10 +223,22 @@ def get_bill_amounts():
         bills_dict = {}
         bills_dict = bills_dict.fromkeys(bills_in)
         for bill in bills_dict:
-            bills_dict[bill] = float(input(f'How much does your {bill} bill cost? '))
-    with open(filename, 'w') as f:
-        json.dump(bills_dict, f)
-    return bills_dict
+            while True:
+                cost = input(f'How much does your {bill} bill cost? ')
+                try:
+                    cost = float(cost)
+                    if cost < 0:
+                        print('Please input a positive number\n')
+                        continue
+                    else:
+                        bills_dict[bill] = cost
+                        break
+                except ValueError:
+                    print("Please input a positive number (Ex. 1600.28)\n")
+                    continue
+        with open(filename, 'w') as f:
+            json.dump(bills_dict, f)
+        return bills_dict
 
 
 def print_incomes(incomes_in: dict) -> dict:
@@ -234,6 +268,7 @@ class MyStates(Enum):
     exit_program = 0
     accounts = auto()
     make_deposit = auto()
+    make_withdrawal = auto()
     goals = auto()
     monthly_income = auto()
     bills = auto()
