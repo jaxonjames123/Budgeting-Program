@@ -301,16 +301,3 @@ def print_file(file):
         lines = f.readlines()
         for line in lines:
             print(line.rstrip())
-
-
-class MyStates(Enum):
-    exit_program = 0
-    accounts = auto()
-    make_deposit = auto()
-    make_withdrawal = auto()
-    goals = auto()
-    monthly_income = auto()
-    bills = auto()
-
-
-
