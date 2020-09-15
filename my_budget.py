@@ -1,9 +1,12 @@
 import os
 import json
-from enum import Enum, auto
 
 
-def edit_accounts():
+def sql_close_account():
+    pass
+
+
+def edit_accounts(user):
     filename = './accounts.json'
     accounts_dict = {}
     if os.path.exists(filename):
@@ -30,9 +33,11 @@ def edit_accounts():
                       "use the withdrawal option.")
             else:
                 accounts_dict.update({account: balance})
+                user.accounts = account
                 with open(filename, 'w') as f:
                     json.dump(accounts_dict, f)
-                    print(f'Your current {account} balance is: ${balance:,.2f}')
+                print(f'Your current {account} balance is: ${balance:,.2f}')
+
         except ValueError:
             print(f'{balance} not in valid number format, please try again')
 

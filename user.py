@@ -4,6 +4,90 @@ import re
 from security import encrypt_password, check_encrypted_password
 import getpass
 import os
+from db_connection import insert_user, load_user
+
+
+class User:
+    def __init__(self, first_name, last_name, username, password, dob, ssn, email):
+        self._accounts = []
+        self._first_name = first_name
+        self._last_name = last_name
+        self._username = username
+        self._password = password
+        add_user(self._username, self._password)
+        self._dob = dob
+        self._ssn = ssn
+        self._email = email
+
+    def __str__(self):
+        return f'{self._first_name} {self._last_name} born: {format_date(self._dob)} email is {self._email}, ' \
+               f'and has {len(self._accounts)} accounts with us'
+
+    @property
+    def username(self):
+        return self._username
+
+    @property
+    def password(self):
+        return self._password
+
+    @property
+    def first_name(self):
+        return self._first_name
+
+    @property
+    def last_name(self):
+        return self._last_name
+
+    @property
+    def dob(self):
+        return self._dob
+
+    @property
+    def ssn(self):
+        return self._ssn
+
+    @property
+    def email(self):
+        return self._email
+
+    @property
+    def accounts(self):
+        return self._accounts
+
+    @first_name.setter
+    def first_name(self, first_name):
+        self._first_name = first_name
+
+    @last_name.setter
+    def last_name(self, last_name):
+        self._last_name = last_name
+
+    @dob.setter
+    def age(self, age):
+        self._dob = age
+
+    @ssn.setter
+    def ssn(self, ssn):
+        self._ssn = ssn
+
+    @email.setter
+    def email(self, email):
+        self._email = email
+
+    @accounts.setter
+    def accounts(self, *accounts):
+        for account in accounts:
+            for _ in account:
+                self._accounts.append(_)
+
+    @username.setter
+    def username(self, username):
+        self._username = username
+
+    @password.setter
+    def password(self, password):
+        self._password = password
 
 
 def add_user(username, password):
@@ -105,6 +189,7 @@ def new_user():
             print(f'{email} is not a valid email address, please try again.')
             continue
     print(f'\nYour username is: {username}')
+    insert_user(first_name, last_name, username, password, dob, ssn, email)
     return User(first_name, last_name, username, password, dob, ssn, email)
 
 
@@ -116,11 +201,12 @@ def login():
         with open(filename) as f:
             users_dict = json.load(f)
     if username in users_dict and check_encrypted_password(pt_password, users_dict[username]):
-        print(f'Login Successful!')
-        return True
+        print(f'Login Successful!\n')
+        return username
     else:
         print('Incorrect Username or Password, Please try again\n')
         login()
+
 
 # Function to allow system admins to log in, after logging in they will be able to add new banks
 def admin_login():
@@ -137,84 +223,8 @@ def admin_login():
         print('Incorrect Username or Password, Please try again\n')
 
 
-class User:
-    def __init__(self, first_name, last_name, username, password, dob, ssn, email):
-        self._accounts = []
-        self._first_name = first_name
-        self._last_name = last_name
-        self._username = username
-        self._password = password
-        add_user(self._username, self._password)
-        self._dob = dob
-        self._ssn = ssn
-        self._email = email
-
-    def __str__(self):
-        return f'{self._first_name} {self._last_name} born: {format_date(self._dob)} email is {self._email}, ' \
-               f'and has {len(self._accounts)} accounts with us'
-
-    @property
-    def username(self):
-        return self._username
-
-    @property
-    def password(self):
-        return self._password
-
-    @property
-    def first_name(self):
-        return self._first_name
-
-    @property
-    def last_name(self):
-        return self._last_name
-
-    @property
-    def dob(self):
-        return self._dob
-
-    @property
-    def ssn(self):
-        return self._ssn
-
-    @property
-    def email(self):
-        return self._email
-
-    @property
-    def accounts(self):
-        return self._accounts
-
-    @first_name.setter
-    def first_name(self, first_name):
-        self._first_name = first_name
-
-    @last_name.setter
-    def last_name(self, last_name):
-        self._last_name = last_name
-
-    @dob.setter
-    def age(self, age):
-        self._dob = age
-
-    @ssn.setter
-    def ssn(self, ssn):
-        self._ssn = ssn
-
-    @email.setter
-    def email(self, email):
-        self._email = email
-
-    @accounts.setter
-    def accounts(self, *accounts):
-        for account in accounts:
-            for _ in account:
-                self._accounts.append(_)
-
-    @username.setter
-    def username(self, username):
-        self._username = username
-
-    @password.setter
-    def password(self, password):
-        self._password = password
+def get_user(username):
+    user_data_list = load_user(username)
+    user = User(user_data_list[0], user_data_list[1], user_data_list[2], user_data_list[3], user_data_list[4],
+                user_data_list[5], user_data_list[6])
+    return user
