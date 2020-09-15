@@ -4,7 +4,7 @@ import re
 from security import encrypt_password, check_encrypted_password
 import getpass
 import os
-from db_connection import insert_user, load_user
+from db_functions import insert_user, load_user
 
 
 class User:
@@ -91,7 +91,7 @@ class User:
 
 
 def add_user(username, password):
-    filename = './UserList.json'
+    filename = '../GeneratedFiles/UserList.json'
     if os.path.exists(filename):
         with open(filename) as f:
             users_dict = json.load(f)
@@ -151,7 +151,7 @@ def new_user():
             break
         else:
             continue
-    filename = './UserList.json'
+    filename = '../GeneratedFiles/UserList.json'
     if os.path.exists(filename):
         with open(filename) as f:
             users_dict = json.load(f)
@@ -196,7 +196,7 @@ def new_user():
 def login():
     username = input('Username: ').rstrip().lower()
     pt_password = getpass.getpass()
-    filename = './UserList.json'
+    filename = '../GeneratedFiles/UserList.json'
     if os.path.exists(filename):
         with open(filename) as f:
             users_dict = json.load(f)
@@ -212,7 +212,7 @@ def login():
 def admin_login():
     username = input('Username: ').rstrip().lower()
     pt_password = getpass.getpass()
-    filename = './AdminLogin.json'
+    filename = '../GeneratedFiles/AdminLogin.json'
     if os.path.exists(filename):
         with open(filename) as f:
             users_dict = json.load(f)

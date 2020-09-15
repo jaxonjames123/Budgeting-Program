@@ -2,7 +2,7 @@ from my_budget import get_goals, edit_accounts, get_monthly_income, get_bill_amo
     withdrawal
 from program_flow_states import MyStates, UserRegistrationStates
 from user import new_user, login, admin_login, get_user
-from db_connection import create_tables
+from db_functions import create_tables
 
 
 def main():
