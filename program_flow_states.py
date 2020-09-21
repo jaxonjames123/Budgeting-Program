@@ -1,6 +1,6 @@
 from enum import Enum, auto
 
-class MyStates(Enum):
+class BudgetStates(Enum):
     log_out = 0
     account_actions = auto()
     make_deposit = auto()
@@ -14,3 +14,11 @@ class UserRegistrationStates(Enum):
     create_account = auto()
     login = auto()
     admin_login = auto()
+
+class AdminFunctionStates(Enum):
+    log_out = 0
+    create_bank = auto()
+    remove_bank = auto()
+    change_bank_name = auto()
+    change_bank_location = auto()
+    create_new_admin = auto()

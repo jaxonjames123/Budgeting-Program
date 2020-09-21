@@ -7,7 +7,7 @@ def sql_close_account():
 
 
 def edit_accounts(user):
-    filename = '../GeneratedFiles/accounts.json'
+    filename = './GeneratedFiles/accounts.json'
     accounts_dict = {}
     if os.path.exists(filename):
         with open(filename) as f:
@@ -43,7 +43,7 @@ def edit_accounts(user):
 
 
 def deposit():
-    filename = '../GeneratedFiles/accounts.json'
+    filename = './GeneratedFiles/accounts.json'
     if os.path.exists(filename):
         with open(filename) as f:
             accounts_dict = json.load(f)
@@ -75,7 +75,7 @@ def deposit():
 
 
 def withdrawal():
-    filename = '../GeneratedFiles/accounts.json'
+    filename = './GeneratedFiles/accounts.json'
     if os.path.exists(filename):
         with open(filename) as f:
             accounts_dict = json.load(f)
@@ -173,7 +173,7 @@ def get_goals():
 
 def get_monthly_income():
     incomes_dict = dict()
-    filename = '../GeneratedFiles/incomes.json'
+    filename = './GeneratedFiles/incomes.json'
     if os.path.exists(filename):
         with open(filename) as f:
             incomes_dict = json.load(f)
@@ -215,7 +215,7 @@ def get_income_source():
 
 
 def get_bill_amounts():
-    filename = '../GeneratedFiles/bills.json'
+    filename = './GeneratedFiles/bills.json'
     if os.path.exists(filename):
         with open(filename) as f:
             bills_dict = json.load(f)
