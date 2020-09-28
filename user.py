@@ -4,18 +4,17 @@ import re
 from security import encrypt_password, check_encrypted_password
 import getpass
 import os
-from db_functions import insert_user, load_user, get_bank_id, check_bank_exists
+from db_functions import insert_user, load_user, check_bank_exists
 from bank import Bank
 
 
 class User:
-    def __init__(self, first_name, last_name, username, password, dob, ssn, email, bank=None):
+    def __init__(self, first_name, last_name, username, password, dob, ssn, email, bank):
         self._accounts = []
         self._first_name = first_name
         self._last_name = last_name
         self._username = username
         self._password = password
-        add_user(self._username, self._password)
         self._dob = dob
         self._ssn = ssn
         self._email = email
@@ -96,20 +95,6 @@ class User:
         self._bank = bank
 
 
-# add a username and hashed password to the UserList json file
-# used in the new_user() function
-def add_user(username, password):
-    filename = './GeneratedFiles/UserList.json'
-    if os.path.exists(filename):
-        with open(filename) as f:
-            users_dict = json.load(f)
-        users_dict.update({username: password})
-    else:
-        users_dict = {username: password}
-    with open(filename, 'w') as f:
-        json.dump(users_dict, f)
-
-
 def name_concat(first, last):
     return f'{first} {last}'
 
@@ -147,6 +132,26 @@ def ssn_validation(ssn):
 
 
 def new_user():
+    bank_id = int()
+    while True:
+        has_bank = input('Are you currently a member at a bank? (Yes/No) ').upper().strip()
+        if has_bank == 'YES' or has_bank == 'Y':
+            bank_name = input('What is the name of your bank? ').upper().strip()
+            bank_location = input('Where is your bank located? ').upper().strip()
+            bank = Bank(bank_name, bank_location)
+            try:
+                if check_bank_exists(bank):
+                    bank_id = int(get_bank_id(bank))
+                    break
+                else:
+                    print(f'{bank_name} is not registered with us.')
+                    continue
+            except IndexError:
+                print('Internal Error. Please contact your system administrator for help resolving this issue.')
+                return 0
+        else:
+            print('Please register with a bank before accessing this application.')
+            return 0
     while True:
         first_name = input('First Name: ').rstrip().upper()
         if name_validation(first_name):
@@ -159,19 +164,13 @@ def new_user():
             break
         else:
             continue
-    filename = './GeneratedFiles/UserList.json'
-    if os.path.exists(filename):
-        with open(filename) as f:
-            users_dict = json.load(f)
-        while True:
-            username = input('Username: ').rstrip().lower()
-            if username in users_dict.keys():
-                print(f'Username {username} already exists, please try a different one')
-                continue
-            else:
-                break
-    else:
-        username = input('Username: ').strip().lower()
+    while True:
+        username = input('Username: ').rstrip().lower()
+        if load_user(username)[0]:
+            print(f'Username {username} already exists, please try a different one')
+            continue
+        else:
+            break
     while True:
         pt_password = getpass.getpass()
         print('Please confirm your password')
@@ -183,9 +182,9 @@ def new_user():
             print('Passwords do not match. Please try again')
             continue
     while True:
-        dob = input('Date of Birth (Year-Month-Date): ').strip().split('-')
+        dob = input('Date of Birth (Month-Day-Year): ').strip().split('-')
         try:
-            dob = datetime.date(int(dob[0]), int(dob[1]), int(dob[2]))
+            dob = datetime.date(int(dob[2]), int(dob[0]), int(dob[1]))
             break
         except ValueError:
             print('Date of Birth not entered in correct format. Please try again.')
@@ -205,23 +204,7 @@ def new_user():
             print(f'{email} is not a valid email address, please try again.')
             continue
     print(f'\nYour username is: {username}')
-    while True:
-        has_bank = input('Are you currently a member at a bank? (Yes/No)').upper().strip()
-        if has_bank == 'YES' or has_bank == 'Y':
-            bank_name = input('What is the name of your bank?')
-            bank_location = input('Where is your bank located?')
-            bank = Bank(bank_name, bank_location)
-            if check_bank_exists(bank):
-                bank_id = int(get_bank_id(bank))
-                user = User(first_name, last_name, username, password, dob, ssn, email, bank_id)
-                insert_user(user)
-                return user
-            else:
-                print(f'{bank_name} is not registered with us.')
-                continue
-        else:
-            break
-    user = User(first_name, last_name, username, password, dob, ssn, email)
+    user = User(first_name, last_name, username, password, dob, ssn, email, bank_id)
     insert_user(user)
     return user
 
@@ -229,19 +212,18 @@ def new_user():
 def login():
     username = input('Username: ').rstrip().lower()
     pt_password = getpass.getpass()
-    filename = './GeneratedFiles/UserList.json'
-    if os.path.exists(filename):
-        try:
-            with open(filename) as f:
-                users_dict = json.load(f)
-            if username in users_dict and check_encrypted_password(pt_password, users_dict[username]):
-                print(f'Login Successful!\n')
-                return username
-            else:
-                print('Username/password combination incorrect. Please try again.\n')
-        except IndexError:
-            print('Username/password combination incorrect. Please try again or create an account.')
-    else:
+    user_info = load_user(username)[1]
+    if load_user(username)[0] and check_encrypted_password(pt_password, user_info[3]):
+        print(f'Login Successful!\n')
+        return user_info
+
+def get_user(user_info):
+    try:
+        user = User(user_info[0], user_info[1], user_info[2], user_info[3], user_info[4], user_info[5], user_info[6],
+                    user_info[7])
+        print(user)
+        return user
+    except TypeError:
         print('Username/password combination incorrect. Please try again.\n')
 
 
@@ -265,12 +247,3 @@ def admin_login():
         print('Incorrect Username or Password, Please try again\n')
 
 
-def get_user(username):
-    try:
-        user_data_list = load_user(username)
-        if user_data_list is not None:
-            user = User(user_data_list[0], user_data_list[1], user_data_list[2], user_data_list[3], user_data_list[4],
-                        user_data_list[5], user_data_list[6])
-            return user
-    except IndexError:
-        print('Incorrect username or password. Please try again.\n')
