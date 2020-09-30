@@ -141,7 +141,7 @@ def new_user():
             bank = Bank(bank_name, bank_location)
             try:
                 if check_bank_exists(bank):
-                    bank_id = int(get_bank_id(bank))
+                    bank_id = bank.bank_id
                     break
                 else:
                     print(f'{bank_name} is not registered with us.')

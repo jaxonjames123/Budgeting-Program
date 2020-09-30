@@ -31,10 +31,10 @@ def create_tables():
                           'account_type_id int not null auto_increment, primary key(account_type_id), foreign key(bank)'
                           ' references banks(bank_id));')
     if not check_table_exists('accounts'):
-        my_cursor.execute('create table accounts (account_type varchar(255), balance decimal(14,2), belongs_to '
+        my_cursor.execute('create table accounts (balance decimal(14,2), account_holder '
                           'varchar(255), date_created date, account_id int not null auto_increment, '
                           'account_type_id int, primary key(account_id), foreign key(account_type_id) references '
-                          'account_types(account_type_id), foreign key(belongs_to) references users(username));')
+                          'account_types(account_type_id), foreign key(account_holder) references users(username));')
     my_cursor.close()
 
 
