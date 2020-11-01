@@ -1,4 +1,4 @@
-from db_functions import insert_bank, check_bank_exists, update_bank, load_bank
+from Database.db_functions import insert_bank, check_bank_exists, update_bank, load_bank
 
 
 class Bank:

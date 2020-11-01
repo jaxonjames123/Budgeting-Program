@@ -1,4 +1,4 @@
-from db_connection import db
+from Database.db_connection import db
 
 
 def check_table_exists(table):

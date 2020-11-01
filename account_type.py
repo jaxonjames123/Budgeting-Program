@@ -1,4 +1,4 @@
-from db_functions import insert_account_type, remove_account_type, fetch_account_type, update_account_info
+from Database.db_functions import insert_account_type, remove_account_type, fetch_account_type, update_account_info
 
 
 class AccountType:

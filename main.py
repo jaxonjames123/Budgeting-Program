@@ -1,11 +1,11 @@
-from my_budget import get_goals, edit_accounts, get_monthly_income, get_bill_amounts, print_bills, deposit, \
+from user_actions import get_goals, edit_accounts, get_monthly_income, get_bill_amounts, print_bills, deposit, \
     withdrawal
-from program_flow_states import BudgetStates, UserRegistrationStates, AdminFunctionStates, BankFunctions, \
+from States.program_flow import BudgetStates, UserRegistrationStates, AdminFunctionStates, BankFunctions, \
     AccountTypeActions, EditAccountType
-from user import new_user, login, admin_login, get_user, User
-from db_functions import create_tables, remove_bank, load_all_banks, load_account_types, remove_account_type
-from bank import new_bank, change_bank_name, change_bank_location, get_bank, print_banks, Bank
-from account_type import add_account_type, edit_account_type_name, edit_interest_rate, edit_monthly_fees,\
+from Classes.user import new_user, login, admin_login, get_user, User
+from Database.db_functions import create_tables, remove_bank, load_all_banks, load_account_types
+from Classes.bank import new_bank, change_bank_name, change_bank_location, get_bank, print_banks
+from Classes.account_type import add_account_type, edit_account_type_name, edit_interest_rate, edit_monthly_fees,\
     edit_minimum_balance, edit_max_withdrawals, delete_account_type, get_account_type, print_all_account_types, \
     AccountType
 

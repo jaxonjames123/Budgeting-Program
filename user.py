@@ -4,8 +4,8 @@ import re
 from security import encrypt_password, check_encrypted_password
 import getpass
 import os
-from db_functions import insert_user, load_user, check_bank_exists
-from bank import Bank
+from Database.db_functions import insert_user, load_user, check_bank_exists
+from Classes.bank import Bank
 
 
 class User:
