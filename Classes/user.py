@@ -1,11 +1,11 @@
 import json
 import datetime
-import re
 from security import encrypt_password, check_encrypted_password
 import getpass
 import os
 from Database.db_functions import insert_user, load_user, check_bank_exists
 from Classes.bank import Bank
+from global_functions import name_validation, format_date, email_validation, ssn_validation
 
 
 class User:
@@ -95,42 +95,6 @@ class User:
         self._bank = bank
 
 
-def name_concat(first, last):
-    return f'{first} {last}'
-
-
-def format_date(date):
-    return date.strftime('%x')
-
-
-def email_validation(email):
-    regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$'
-    if re.search(regex, email):
-        return True
-    else:
-        return False
-
-
-def name_validation(name):
-    name = name
-    if name.isalpha():
-        return True
-    else:
-        print("Please enter a name with only letter characters")
-        return False
-
-
-def ssn_validation(ssn):
-    chunks = ssn.split('-')
-    if len(chunks) == 3:
-        if len(chunks[0]) == 3 and len(chunks[1]) == 2 and len(chunks[2]) == 4:
-            return True
-        else:
-            return False
-    else:
-        return False
-
-
 def new_user():
     bank_id = int()
     while True:
@@ -208,15 +172,6 @@ def new_user():
     insert_user(user)
     return user
 
-
-def login():
-    username = input('Username: ').rstrip().lower()
-    pt_password = getpass.getpass()
-    user_info = load_user(username)[1]
-    if load_user(username)[0] and check_encrypted_password(pt_password, user_info[3]):
-        print(f'Login Successful!\n')
-        return user_info
-
 def get_user(user_info):
     try:
         user = User(user_info[0], user_info[1], user_info[2], user_info[3], user_info[4], user_info[5], user_info[6],
@@ -231,7 +186,7 @@ def get_user(user_info):
 def admin_login():
     username = input('Username: ').strip().lower()
     pt_password = getpass.getpass()
-    filename = './GeneratedFiles/AdminLogin.json'
+    filename = '../GeneratedFiles/AdminLogin.json'
     if os.path.exists(filename):
         try:
             with open(filename) as f:
@@ -246,4 +201,11 @@ def admin_login():
     else:
         print('Incorrect Username or Password, Please try again\n')
 
+def login():
+    username = input('Username: ').rstrip().lower()
+    pt_password = getpass.getpass()
+    user_info = load_user(username)[1]
+    if load_user(username)[0] and check_encrypted_password(pt_password, user_info[3]):
+        print(f'Login Successful!\n')
+        return user_info
 

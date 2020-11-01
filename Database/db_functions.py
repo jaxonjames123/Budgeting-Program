@@ -31,10 +31,11 @@ def create_tables():
                           'account_type_id int not null auto_increment, primary key(account_type_id), foreign key(bank)'
                           ' references banks(bank_id));')
     if not check_table_exists('accounts'):
-        my_cursor.execute('create table accounts (balance decimal(14,2), account_holder '
-                          'varchar(255), date_created date, account_id int not null auto_increment, '
-                          'account_type_id int, primary key(account_id), foreign key(account_type_id) references '
-                          'account_types(account_type_id), foreign key(account_holder) references users(username));')
+        my_cursor.execute('create table accounts (bank int, account_number int, balance decimal(14,2), account_holder '
+                          'varchar(255), account_type int, date_created date, account_id int not null '
+                          'auto_increment, primary key(account_id), foreign key(account_type) references '
+                          'account_types(account_type_id), foreign key(account_holder) references users(username), '
+                          'foreign key(bank) references banks(bank_id));')
     my_cursor.close()
 
 
@@ -222,9 +223,21 @@ def fetch_account_type(type_id):
         account_min_bal = record[0][4]
         account_max_withdrawal = record[0][5]
         account_id = record[0][6]
-        account_type = [account_name, account_bank, account_interest, account_fee, account_min_bal, account_max_withdrawal,
-                        account_id]
+        account_type = [account_name, account_bank, account_interest, account_fee, account_min_bal,
+                        account_max_withdrawal, account_id]
         return account_type
+
+def fetch_type_from_name(account_type_name, bank_id):
+    cursor = db.cursor()
+    select_query = f'select * from account_types where bank = "{bank_id}" and account_type = "{account_type_name}"'
+    cursor.execute(select_query)
+    record = cursor.fetchall()
+    row_count = cursor.rowcount
+    cursor.close()
+    if row_count > 0:
+        return True, record[0][6]
+    else:
+        return False
 
 def update_account_info(account, field_name, value):
     update_query = f'update account_types set {field_name} = "{value}" where account_type_id = "{account.account_type_id}"'
@@ -233,4 +246,28 @@ def update_account_info(account, field_name, value):
     db.commit()
     cursor.close()
     print('Account type has been updated')
+
+def load_account(account_id):
+    select_query = f'select * from accounts where account_id = "{account_id}"'
+    cursor = db.cursor()
+    cursor.execute(select_query)
+    record = cursor.fetchall()
+    row_count = cursor.rowcount
+    cursor.close()
+    if row_count > 0:
+        account = [record[0][0], record[0][1], record[0][2], record[0][3], record[0][4],
+                   record[0][5], record[0][6]]
+        return account
+    else:
+        print('There is no account associated with this ID')
+
+def add_account_db(account):
+    insert_query = f'insert into accounts (bank, account_number, balance, account_holder, account_type,' \
+                   f'date_created) values ("{account.bank}", "{account.account_number}", "{account.balance}", ' \
+                   f'"{account.account_holder}", "{account.account_type_id}", "{account.date_created}");'
+    cursor = db.cursor()
+    cursor.execute(insert_query)
+    db.commit()
+    cursor.close()
+    print('Account successfully inserted into accounts table')
 

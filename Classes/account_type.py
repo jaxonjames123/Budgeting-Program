@@ -92,7 +92,7 @@ def add_account_type(bank):
             print('Please input a number, enter 0 if there is no interest rate')
             continue
     while True:
-        monthly_fees = input("What is the total cost of the monthly fees associated with this kind of account? ") \
+        monthly_fees = input("What is the total cost of the monthly fees associated with this kind of account? $") \
             .strip()
         try:
             monthly_fees = float(monthly_fees)
@@ -101,7 +101,7 @@ def add_account_type(bank):
             print('Please input a number, enter 0 if there are no monthly fees')
             continue
     while True:
-        minimum_balance = input('Does a certain monthly balance need to be maintained with this kind of account? ') \
+        minimum_balance = input('What is monthly balance needs to be maintained with this kind of account? $') \
             .strip()
         try:
             minimum_balance = float(minimum_balance)
@@ -150,7 +150,7 @@ def edit_interest_rate(account):
 
 def edit_monthly_fees(account):
     old_fee = account.monthly_fees
-    new_fee = input('What is the monthly fee for this account type? ').strip()
+    new_fee = input('What is the monthly fee for this account type? $').strip()
     try:
         new_fee = float(new_fee)
         account.monthly_fees = new_fee
@@ -163,7 +163,7 @@ def edit_monthly_fees(account):
 
 def edit_minimum_balance(account):
     old_balance = account.minimum_balance
-    new_balance = input('What is the minimum balance for this account type? ').strip()
+    new_balance = input('What is the minimum balance for this account type? $').strip()
     try:
         new_balance = float(new_balance)
         account.minimum_balance = new_balance
